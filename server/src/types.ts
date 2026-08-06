@@ -1,3 +1,5 @@
-import express from "express";
+export type UUID = string;
 
-export type Service = () => express.Router;
+export const isUUID = (obj: any): obj is UUID => {
+  return typeof obj === "string";
+};

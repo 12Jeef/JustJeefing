@@ -8,13 +8,15 @@
     "build": "npm run typecheck && node build.mjs"
   },
   "dependencies": {
+    "busboy": "^1.6.0",
     "express": "^5.2.1",
-    "multer": "^2.2.0"
+    "uuid": "^14.0.1"
   },
   "devDependencies": {
+    "@types/busboy": "^1.5.4",
     "@types/express": "^5.0.6",
-    "@types/multer": "^2.2.0",
     "@types/node": "^26.1.2",
+    "@types/uuid": "^10.0.0",
     "esbuild": "^0.28.1",
     "tsx": "^4.23.5",
     "typescript": "^7.0.2"
