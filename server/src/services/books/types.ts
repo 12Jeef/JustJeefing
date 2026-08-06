@@ -1,18 +1,29 @@
 import { isUUID, UUID } from "../../types.js";
 
 export type Book = {
-  name: string;
+  title: string;
   authors: string[];
   uuid: UUID;
+};
+
+export const isTitle = (obj: any): obj is string => {
+  return typeof obj === "string";
+};
+
+export const isAuthors = (obj: any): obj is string[] => {
+  return (
+    Array.isArray(obj) &&
+    obj.length > 0 &&
+    obj.every((a) => typeof a === "string")
+  );
 };
 
 export const isBook = (obj: any): obj is Book => {
   return (
     typeof obj === "object" &&
     obj !== null &&
-    typeof obj.name === "string" &&
-    Array.isArray(obj.authors) &&
-    obj.authors.every((author: any) => typeof author === "string") &&
+    isTitle(obj.title) &&
+    isAuthors(obj.authors) &&
     isUUID(obj.uuid)
   );
 };
