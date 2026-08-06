@@ -4,8 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js"
+    "typecheck": "tsc --noEmit",
+    "build": "npm run typecheck && node build.mjs"
   },
   "dependencies": {
     "express": "^5.2.1",
@@ -15,6 +15,7 @@
     "@types/express": "^5.0.6",
     "@types/multer": "^2.2.0",
     "@types/node": "^26.1.2",
+    "esbuild": "^0.28.1",
     "tsx": "^4.23.5",
     "typescript": "^7.0.2"
   }
