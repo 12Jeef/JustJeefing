@@ -49,7 +49,7 @@ export function childLogger(parent: Logger, tag: string): Logger {
 }
 
 export function createLogger(logPath: string): Logger {
-  fs.unlinkSync(logPath);
+  if (fs.existsSync(logPath)) fs.unlinkSync(logPath);
   const stream = fs.createWriteStream(logPath, { flags: "a" });
   return {
     i: (msg: string) => write(stream, "INFO", msg),

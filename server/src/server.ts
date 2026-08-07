@@ -2,6 +2,7 @@ import express from "express";
 import logger from "./logger.js";
 import { SERVER_LOCAL_PORT, SERVER_LOCAL_IP } from "./config.js";
 import books from "./services/books/books.js";
+import { auth, setup } from "./auth.js";
 
 const l = logger.child("SERVER");
 
@@ -15,32 +16,40 @@ try {
 }
 l.s("Initialized");
 
-const l2 = l.child("SERVICES");
+l.i("Setting up auth...");
+try {
+  setup(app);
+} catch (err) {
+  l.e(`Setting up auth failed: ${err}`);
+  process.exit(1);
+}
+l.s("Set up auth");
 
 const services: (() => express.Router)[] = [books];
 const nServices = services.length;
-l2.i(`Registering ${nServices}...`);
+l.i(`Registering services ${nServices}...`);
 const failedServices: string[] = [];
 for (const service of services) {
-  l2.i(`Registering "${service.name}"...`);
+  l.i(`Registering service "${service.name}"...`);
   try {
     const router = service();
+    router.use(auth);
     app.use(`/${service.name}`, router);
-    l2.s(`Registered "${service.name}"`);
+    l.s(`Registered service "${service.name}"`);
   } catch (err) {
-    l2.e(`Registering "${service.name}" failed: ${err}`);
+    l.e(`Registering service "${service.name}" failed: ${err}`);
     failedServices.push(service.name);
   }
 }
 if (failedServices.length > 0) {
-  l2.w(
-    `Registered ${nServices - failedServices.length}/${nServices}: Failed services:`,
+  l.w(
+    `Registered services ${nServices - failedServices.length}/${nServices}: Failed services:`,
   );
   for (const service of failedServices) {
-    l2.w(`- ${service}`);
+    l.w(`- ${service}`);
   }
 } else {
-  l2.s(`Registered ${nServices}/${nServices}`);
+  l.s(`Registered services ${nServices}/${nServices}`);
 }
 
 l.i("Starting...");
