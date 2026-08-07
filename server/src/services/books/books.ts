@@ -12,24 +12,29 @@ import Busboy, { FileInfo } from "busboy";
 import { Readable } from "stream";
 import { UUID } from "../../types.js";
 
-const l = logger.child("SERVICE|books");
+const l = logger.child("SERVICE:books");
 
 function books() {
   const s = setupStorage(books);
 
-  // load library
+  l.i(`Loading library...`);
   const library: Library = (() => {
     try {
       const data = s.readJSON("library.json");
-      if (!isLibrary(data)) return [];
+      if (!isLibrary(data)) {
+        l.e(`Loading library failed: Invalid library data`);
+        return [];
+      }
       return data;
     } catch (err) {
+      l.e(`Loading library failed: ${err}`);
       return [];
     }
   })();
+  l.s(`Loaded library: ${library.length} books`);
   s.writeJSON(library, "library.json");
 
-  // set up API
+  l.i(`Setting up API...`);
   const api = express.Router();
 
   // adding a book is not implemented yet, so just return a success response for now
@@ -46,7 +51,7 @@ function books() {
     bb.on("field", (name: string, val: string) => {
       if (name === "title") {
         if (title !== null) {
-          l.w(`  Finding fields failed: Duplicate title field`);
+          l.e(`  Finding fields failed: Duplicate title field`);
           res
             .status(400)
             .json(makeErrorResponse("Duplicate title field", null));
@@ -54,7 +59,7 @@ function books() {
         }
         title = val;
         if (!isTitle(title)) {
-          l.w(`  Finding fields failed: Invalid title "${title}"`);
+          l.e(`  Finding fields failed: Invalid title "${title}"`);
           res
             .status(400)
             .json(makeErrorResponse(`Invalid title "${title}"`, null));
@@ -65,7 +70,7 @@ function books() {
       }
       if (name === "authors") {
         if (authors !== null) {
-          l.w(`  Finding fields failed: Duplicate authors field`);
+          l.e(`  Finding fields failed: Duplicate authors field`);
           res
             .status(400)
             .json(makeErrorResponse("Duplicate authors field", null));
@@ -74,14 +79,14 @@ function books() {
         try {
           authors = JSON.parse(val);
         } catch (err) {
-          l.w(`  Finding fields failed: Invalid authors "${val}"`);
+          l.e(`  Finding fields failed: Invalid authors "${val}"`);
           res
             .status(400)
             .json(makeErrorResponse(`Invalid authors "${val}"`, null));
           return;
         }
         if (!isAuthors(authors)) {
-          l.w(`  Finding fields failed: Invalid authors "${authors}"`);
+          l.e(`  Finding fields failed: Invalid authors "${authors}"`);
           res
             .status(400)
             .json(makeErrorResponse(`Invalid authors "${authors}"`, null));
@@ -90,7 +95,7 @@ function books() {
         l.i(`  ↪ Found authors: ${authors.join(", ")}`);
         return;
       }
-      l.w(`  Finding fields failed: Unexpected field name "${name}"`);
+      l.e(`  Finding fields failed: Unexpected field name "${name}"`);
     });
     bb.on(
       "file",
@@ -100,12 +105,12 @@ function books() {
         info: FileInfo,
       ) => {
         if (name !== "file") {
-          l.w(`  Finding fields failed: Unexpected field name "${name}"`);
+          l.e(`  Finding fields failed: Unexpected field name "${name}"`);
           stream.resume();
           return;
         }
         if (uuid !== null) {
-          l.w(`  Finding fields failed: Duplicate file field`);
+          l.e(`  Finding fields failed: Duplicate file field`);
           res.status(400).json(makeErrorResponse("Duplicate file field", null));
           stream.resume();
           return;
@@ -161,7 +166,7 @@ function books() {
     l.i(`Getting book ${req.params.uuid}...`);
     const book = library.find((b) => b.uuid === req.params.uuid);
     if (!book) {
-      l.w(`Getting book ${req.params.uuid} failed: Book not found`);
+      l.e(`Getting book ${req.params.uuid} failed: Book not found`);
       res
         .status(404)
         .json(makeErrorResponse(`Book not found ${req.params.uuid}`, null));
@@ -176,7 +181,7 @@ function books() {
     l.i(`Getting book pdf ${req.params.uuid}...`);
     const book = library.find((b) => b.uuid === req.params.uuid);
     if (!book) {
-      l.w(`Getting book pdf ${req.params.uuid} failed: Book not found`);
+      l.e(`Getting book pdf ${req.params.uuid} failed: Book not found`);
       res
         .status(404)
         .json(makeErrorResponse(`Book not found ${req.params.uuid}`, null));
@@ -203,7 +208,7 @@ function books() {
     l.i(`Removing book ${req.params.uuid}...`);
     const bookIndex = library.findIndex((b) => b.uuid === req.params.uuid);
     if (bookIndex === -1) {
-      l.w(`Removing book ${req.params.uuid} failed: Book not found`);
+      l.e(`Removing book ${req.params.uuid} failed: Book not found`);
       res
         .status(404)
         .json(makeErrorResponse(`Book not found ${req.params.uuid}`, null));
@@ -216,6 +221,8 @@ function books() {
     s.writeJSON(library, "library.json");
     res.json(makeSuccessResponse(null));
   });
+
+  l.s(`Set up API`);
 
   return api;
 }

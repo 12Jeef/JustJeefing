@@ -35,12 +35,13 @@ export type Logger = {
 };
 
 export function childLogger(parent: Logger, tag: string): Logger {
+  tag = tag.trim().padEnd(20, " ");
   return {
-    i: (msg: string) => parent.i(`<${tag}>: ${msg}`),
-    s: (msg: string) => parent.s(`<${tag}>: ${msg}`),
-    w: (msg: string) => parent.w(`<${tag}>: ${msg}`),
-    e: (msg: string) => parent.e(`<${tag}>: ${msg}`),
-    d: (msg: string) => parent.d(`<${tag}>: ${msg}`),
+    i: (msg: string) => parent.i(`${tag}> ${msg}`),
+    s: (msg: string) => parent.s(`${tag}> ${msg}`),
+    w: (msg: string) => parent.w(`${tag}> ${msg}`),
+    e: (msg: string) => parent.e(`${tag}> ${msg}`),
+    d: (msg: string) => parent.d(`${tag}> ${msg}`),
     child: function (tag: string) {
       return childLogger(this, tag);
     },
