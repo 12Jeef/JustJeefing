@@ -21,6 +21,8 @@ const addResult = await addResponse.json();
 const uuid = addResult.data.uuid;
 console.log("added book", addResult);
 
+await new Promise((res) => setTimeout(res, 10 * 1e3));
+
 console.log("testing removing the book");
 
 const removeResponse = await fetch(

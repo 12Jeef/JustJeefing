@@ -14,7 +14,7 @@ import { UUID } from "../../types.js";
 
 const l = logger.child("SERVICE:books");
 
-function books() {
+function books(api: express.Router) {
   const s = setupStorage(books);
 
   l.i(`Loading library...`);
@@ -35,7 +35,6 @@ function books() {
   s.writeJSON(library, "library.json");
 
   l.i(`Setting up API...`);
-  const api = express.Router();
 
   // adding a book is not implemented yet, so just return a success response for now
   api.post("/add", (req, res) => {

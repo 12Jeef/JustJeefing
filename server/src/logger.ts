@@ -8,7 +8,12 @@ const BLUE = "\x1b[34m";
 
 export type LogLevel = "INFO" | "SUCCESS" | "WARN" | "ERROR" | "DEBUG";
 
-const write = (stream: fs.WriteStream, level: LogLevel, msg: string) => {
+const write = (
+  stream: fs.WriteStream,
+  level: LogLevel,
+  indent: number,
+  msg: string,
+) => {
   const now = new Date();
   const timestamp = now.toISOString();
   const consoleMsg = `${
@@ -19,7 +24,7 @@ const write = (stream: fs.WriteStream, level: LogLevel, msg: string) => {
       ERROR: RED,
       DEBUG: BLUE,
     }[level]
-  }[${level[0]}] ${msg}${RESET}\n`;
+  }[${level[0]}] ${" ".repeat(indent)}${msg}${RESET}\n`;
   const streamMsg = `${timestamp} [${level[0]}] ${msg}\n`;
   process.stdout.write(consoleMsg);
   stream.write(streamMsg);
@@ -32,10 +37,12 @@ export type Logger = {
   e: (msg: string) => void;
   d: (msg: string) => void;
   child: (tag: string) => Logger;
+  indent: () => void;
+  unindent: () => void;
 };
 
 export function childLogger(parent: Logger, tag: string): Logger {
-  tag = tag.trim().padEnd(20, " ");
+  tag = tag.trim().padEnd(17, " ");
   return {
     i: (msg: string) => parent.i(`${tag}> ${msg}`),
     s: (msg: string) => parent.s(`${tag}> ${msg}`),
@@ -45,21 +52,26 @@ export function childLogger(parent: Logger, tag: string): Logger {
     child: function (tag: string) {
       return childLogger(this, tag);
     },
+    indent: parent.indent,
+    unindent: parent.unindent,
   };
 }
 
 export function createLogger(logPath: string): Logger {
   if (fs.existsSync(logPath)) fs.unlinkSync(logPath);
   const stream = fs.createWriteStream(logPath, { flags: "a" });
+  let indent = 0;
   return {
-    i: (msg: string) => write(stream, "INFO", msg),
-    s: (msg: string) => write(stream, "SUCCESS", msg),
-    w: (msg: string) => write(stream, "WARN", msg),
-    e: (msg: string) => write(stream, "ERROR", msg),
-    d: (msg: string) => write(stream, "DEBUG", msg),
+    i: (msg: string) => write(stream, "INFO", indent, msg),
+    s: (msg: string) => write(stream, "SUCCESS", indent, msg),
+    w: (msg: string) => write(stream, "WARN", indent, msg),
+    e: (msg: string) => write(stream, "ERROR", indent, msg),
+    d: (msg: string) => write(stream, "DEBUG", indent, msg),
     child: function (tag: string) {
       return childLogger(this, tag);
     },
+    indent: () => indent++,
+    unindent: () => indent--,
   };
 }
 

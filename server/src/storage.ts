@@ -13,7 +13,9 @@ export type Storage = {
   writeJSON: (data: any, ...subPath: string[]) => void;
 };
 
-export const setupStorage = (service: () => express.Router): Storage => {
+export const setupStorage = (
+  service: (api: express.Router) => void,
+): Storage => {
   const dir = path.join(DATA_DIR, service.name);
   fs.mkdirSync(dir, { recursive: true });
   const makePath = (...subPath: string[]) => path.join(dir, ...subPath);

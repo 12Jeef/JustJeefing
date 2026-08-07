@@ -56,7 +56,7 @@ export const setup = (app: express.Express) => {
     }
   });
 
-  l.i("Set up API");
+  l.s("Set up API");
 };
 
 export const auth = (
