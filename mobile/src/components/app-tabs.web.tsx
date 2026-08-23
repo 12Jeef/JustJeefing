@@ -13,7 +13,7 @@ import { ExternalLink } from "./external-link";
 import { ThemedText } from "./themed-text";
 import { ThemedView } from "./themed-view";
 
-import { Colors, MaxContentWidth, Spacing } from "@/constants/theme";
+import { Colors, Spacing } from "@/constants/theme";
 
 export default function AppTabs() {
   return (
@@ -40,28 +40,17 @@ export function TabButton({
 }: TabTriggerSlotProps) {
   return (
     <Pressable {...props} style={({ pressed }) => pressed && styles.pressed}>
-      <ThemedView
-        type={isFocused ? "backgroundSelected" : "backgroundElement"}
-        style={styles.tabButtonView}
-      >
-        <ThemedText
-          type="small"
-          themeColor={isFocused ? "text" : "textSecondary"}
-        >
-          {children}
-        </ThemedText>
+      <ThemedView style={styles.tabButtonView}>
+        <ThemedText type="small">{children}</ThemedText>
       </ThemedView>
     </Pressable>
   );
 }
 
 export function CustomTabList(props: TabListProps) {
-  const scheme = useColorScheme();
-  const colors = Colors[scheme === "unspecified" ? "light" : scheme];
-
   return (
     <View {...props} style={styles.tabListContainer}>
-      <ThemedView type="backgroundElement" style={styles.innerContainer}>
+      <ThemedView style={styles.innerContainer}>
         <ThemedText type="smallBold" style={styles.brandText}>
           Expo Starter
         </ThemedText>
@@ -72,7 +61,7 @@ export function CustomTabList(props: TabListProps) {
           <Pressable style={styles.externalPressable}>
             <ThemedText type="link">Docs</ThemedText>
             <SymbolView
-              tintColor={colors.text}
+              tintColor={Colors.fg1}
               name={{ ios: "arrow.up.right.square", web: "link" }}
               size={12}
             />
@@ -100,7 +89,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexGrow: 1,
     gap: Spacing.two,
-    maxWidth: MaxContentWidth,
   },
   brandText: {
     marginRight: "auto",

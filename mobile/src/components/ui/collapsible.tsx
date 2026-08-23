@@ -5,15 +5,13 @@ import Animated, { FadeIn } from "react-native-reanimated";
 
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { Spacing } from "@/constants/theme";
-import { useTheme } from "@/hooks/use-theme";
+import { Colors, Spacing } from "@/constants/theme";
 
 export function Collapsible({
   children,
   title,
 }: PropsWithChildren & { title: string }) {
   const [isOpen, setIsOpen] = useState(false);
-  const theme = useTheme();
 
   return (
     <ThemedView>
@@ -24,7 +22,7 @@ export function Collapsible({
         ]}
         onPress={() => setIsOpen((value) => !value)}
       >
-        <ThemedView type="backgroundElement" style={styles.button}>
+        <ThemedView style={styles.button}>
           <SymbolView
             name={{
               ios: "chevron.right",
@@ -33,7 +31,7 @@ export function Collapsible({
             }}
             size={14}
             weight="bold"
-            tintColor={theme.text}
+            tintColor={Colors.fg1}
             style={{ transform: [{ rotate: isOpen ? "-90deg" : "90deg" }] }}
           />
         </ThemedView>
@@ -42,9 +40,7 @@ export function Collapsible({
       </Pressable>
       {isOpen && (
         <Animated.View entering={FadeIn.duration(200)}>
-          <ThemedView type="backgroundElement" style={styles.content}>
-            {children}
-          </ThemedView>
+          <ThemedView style={styles.content}>{children}</ThemedView>
         </Animated.View>
       )}
     </ThemedView>

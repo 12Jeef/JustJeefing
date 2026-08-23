@@ -7,17 +7,14 @@ import { ExternalLink } from "@/components/external-link";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { Collapsible } from "@/components/ui/collapsible";
-import { BottomTabInset, MaxContentWidth, Spacing } from "@/constants/theme";
-import { useTheme } from "@/hooks/use-theme";
+import { Colors, Spacing } from "@/constants/theme";
 
 export default function TabTwoScreen() {
   const safeAreaInsets = useSafeAreaInsets();
   const insets = {
     ...safeAreaInsets,
-    bottom: safeAreaInsets.bottom + BottomTabInset + Spacing.three,
+    bottom: safeAreaInsets.bottom + Spacing.three,
   };
-  const theme = useTheme();
-
   const contentPlatformStyle = Platform.select({
     android: {
       paddingTop: insets.top,
@@ -33,23 +30,23 @@ export default function TabTwoScreen() {
 
   return (
     <ScrollView
-      style={[styles.scrollView, { backgroundColor: theme.background }]}
+      style={[styles.scrollView, { backgroundColor: Colors.bg1 }]}
       contentInset={insets}
       contentContainerStyle={[styles.contentContainer, contentPlatformStyle]}
     >
       <ThemedView style={styles.container}>
         <ThemedView style={styles.titleContainer}>
           <ThemedText type="subtitle">Explore</ThemedText>
-          <ThemedText style={styles.centerText} themeColor="textSecondary">
+          <ThemedText style={styles.centerText}>
             This starter app includes example{"\n"}code to help you get started.
           </ThemedText>
 
           <ExternalLink href="https://docs.expo.dev" asChild>
             <Pressable style={({ pressed }) => pressed && styles.pressed}>
-              <ThemedView type="backgroundElement" style={styles.linkButton}>
+              <ThemedView style={styles.linkButton}>
                 <ThemedText type="link">Expo documentation</ThemedText>
                 <SymbolView
-                  tintColor={theme.text}
+                  tintColor={Colors.fg1}
                   name={{
                     ios: "arrow.up.right.square",
                     android: "link",
@@ -80,10 +77,7 @@ export default function TabTwoScreen() {
           </Collapsible>
 
           <Collapsible title="Android, iOS, and web support">
-            <ThemedView
-              type="backgroundElement"
-              style={styles.collapsibleContent}
-            >
+            <ThemedView style={styles.collapsibleContent}>
               <ThemedText type="small">
                 You can open this project on Android, iOS, and the web. To open
                 the web version, press{" "}
@@ -143,7 +137,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   container: {
-    maxWidth: MaxContentWidth,
     flexGrow: 1,
   },
   titleContainer: {
