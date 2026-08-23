@@ -1,73 +1,58 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { HintRow } from "@/components/hint-row";
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
-import { Spacing } from "@/constants/theme";
+import { Colors } from "@/constants/theme";
 import SplashIcon from "@/components/SplashIcon";
 
-export default function HomeScreen() {
+export default function Index() {
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <SplashIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
-
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+    <View style={[styles.main]}>
+      <SafeAreaView style={[styles.safeArea]}>
+        <SplashIcon />
+        <Text style={[styles.title]}>
+          <Text style={[styles.titlePart1]}>Just</Text>
+          {"\n"}
+          <Text style={[styles.titlePart2]}>Jeefing</Text>
+        </Text>
+        <Text style={[styles.subtitle]}>
+          A custom iOS app for Jeffrey to handle his own services
+        </Text>
       </SafeAreaView>
-    </ThemedView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  main: {
     flex: 1,
+    backgroundColor: Colors.bg1,
+    alignItems: "center",
     justifyContent: "center",
-    flexDirection: "row",
   },
   safeArea: {
     flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: "center",
-    gap: Spacing.three,
-    paddingBottom: Spacing.three,
-  },
-  heroSection: {
     alignItems: "center",
     justifyContent: "center",
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+    gap: 32,
+    padding: 32,
   },
   title: {
+    paddingTop: 12,
     textAlign: "center",
+    fontSize: 48,
+    fontWeight: 800,
+    lineHeight: 36,
   },
-  code: {
-    textTransform: "uppercase",
+  titlePart1: {
+    color: Colors.fg1,
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: "stretch",
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+  titlePart2: {
+    color: Colors.accent,
+  },
+  subtitle: {
+    paddingHorizontal: 32,
+    textAlign: "center",
+    fontSize: 16,
+    color: Colors.fg2,
   },
 });

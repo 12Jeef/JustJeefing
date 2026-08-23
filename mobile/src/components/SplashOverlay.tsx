@@ -26,7 +26,7 @@ export default function SplashOverlay({}: SplashOverlayProps) {
 
   return stage === 0 ? (
     <View
-      style={[styles.view]}
+      style={[styles.background]}
       onLayout={async () => {
         await SplashScreen.hideAsync();
         setStage(1);
@@ -36,7 +36,7 @@ export default function SplashOverlay({}: SplashOverlayProps) {
     </View>
   ) : stage === 1 ? (
     <Animated.View
-      style={[styles.view]}
+      style={[styles.background]}
       entering={kf.withCallback((finished) => {
         "worklet";
         if (finished) scheduleOnRN(setStage, 2);
@@ -48,7 +48,7 @@ export default function SplashOverlay({}: SplashOverlayProps) {
 }
 
 const styles = StyleSheet.create({
-  view: {
+  background: {
     zIndex: 1e3,
     ...StyleSheet.absoluteFill,
     backgroundColor: Colors.accent2,
