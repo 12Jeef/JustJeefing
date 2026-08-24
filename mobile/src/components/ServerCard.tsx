@@ -7,9 +7,13 @@ import Spinner from "./Spinner";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { setDev } from "@/slice";
 
-export type ServerCardProps = {} & ViewProps;
+export type ServerCardProps = { actionable?: boolean } & ViewProps;
 
-export default function ServerCard({ style, ...etc }: ServerCardProps) {
+export default function ServerCard({
+  actionable = false,
+  style,
+  ...etc
+}: ServerCardProps) {
   const dev = useAppSelector((state) => state.app.server.dev);
   const connection = useAppSelector((state) => state.app.server.connection);
 
@@ -43,24 +47,62 @@ export default function ServerCard({ style, ...etc }: ServerCardProps) {
         </Pressable>
         <Pressable
           onPress={() => dispatch(setDev(!dev))}
+          disabled={!actionable}
           style={({ pressed }) => [styles.tag, { opacity: pressed ? 0.5 : 1 }]}
         >
-          <Text style={[styles.tagText]}>
-            {dev ? "Development" : "Production"}
-          </Text>
+          <Text style={[styles.tagText]}>{dev ? "DEV" : "PROD"}</Text>
         </Pressable>
         <Text style={[styles.ip]}>
           {show ? ip + ":" + port : "***.***.***.***:****"}
         </Text>
       </View>
+      {!(actionable && connection === "CONNECTED-NOAUTH") && (
+        <Text
+          style={[
+            styles.status,
+            {
+              color: {
+                DISCONNECTED: Colors.red,
+                CONNECTING: Colors.accent,
+                "CONNECTED-NOAUTH": Colors.yellow,
+                "CONNECTED-AUTH": Colors.green,
+              }[connection],
+            },
+          ]}
+        >
+          {
+            {
+              DISCONNECTED: "Disconnected",
+              CONNECTING: "Connecting...",
+              "CONNECTED-NOAUTH": "Not authorized",
+              "CONNECTED-AUTH": "Connected",
+            }[connection]
+          }
+        </Text>
+      )}
+      {actionable && connection === "CONNECTED-NOAUTH" && (
+        <Pressable
+          style={({ pressed }) => [
+            styles.statusAuth,
+            { opacity: pressed ? 0.5 : 1 },
+          ]}
+        >
+          <Text style={[styles.status, { color: Colors.yellow }]}>
+            Authorize →
+          </Text>
+        </Pressable>
+      )}
       {connection === "DISCONNECTED" && (
         <X size={24} color={Colors.red} style={[styles.icon]} />
       )}
       {connection === "CONNECTING" && (
         <Spinner size={24} color={Colors.accent} style={[styles.icon]} />
       )}
-      {connection === "CONNECTED" && (
-        <Check size={24} color={Colors.accent} style={[styles.icon]} />
+      {connection === "CONNECTED-NOAUTH" && (
+        <X size={24} color={Colors.yellow} style={[styles.icon]} />
+      )}
+      {connection === "CONNECTED-AUTH" && (
+        <Check size={24} color={Colors.green} style={[styles.icon]} />
       )}
     </View>
   );
@@ -106,9 +148,13 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.mono,
     color: Colors.fg2,
   },
+  status: {
+    fontSize: 14,
+  },
+  statusAuth: {},
   icon: {
     position: "absolute",
-    top: 12,
+    bottom: 12,
     right: 12,
   },
 });

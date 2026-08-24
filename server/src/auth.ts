@@ -55,9 +55,26 @@ export const setup = (app: express.Express) => {
       res.status(401).json(makeErrorResponse("Invalid Google token"));
     }
   });
-  app.get("/health", (req, res) => res.json({ success: true }));
+  app.get("/health", (req, res) => res.json({ success: authCheck(req) }));
 
   l.s("Set up API");
+};
+
+export const authCheck = (req: express.Request) => {
+  const sessionId = req.cookies.session;
+  l.i(`Checking ${sessionId}...`);
+  const session = sessions.get(sessionId);
+  if (!session) {
+    l.w("↪ Session does not exist");
+    return false;
+  }
+  if (session.expires < Date.now()) {
+    l.w("↪ Session expired");
+    sessions.delete(sessionId);
+    return false;
+  }
+  l.s("↪ Session authenticated");
+  return true;
 };
 
 export const auth = (
@@ -65,20 +82,9 @@ export const auth = (
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  const sessionId = req.cookies.session;
-  l.i(`Checking ${sessionId}...`);
-  const session = sessions.get(sessionId);
-  if (!session) {
-    l.w("↪ Session does not exist");
+  if (!authCheck(req)) {
     res.sendStatus(401);
     return;
   }
-  if (session.expires < Date.now()) {
-    l.w("↪ Session expired");
-    sessions.delete(sessionId);
-    res.sendStatus(401);
-    return;
-  }
-  l.s("↪ Session authenticated");
   next();
 };

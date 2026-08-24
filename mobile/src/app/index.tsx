@@ -18,7 +18,7 @@ export default function Index() {
         <Text style={[styles.subtitle]}>
           A custom iOS app for Jeffrey to handle his own services
         </Text>
-        <ServerCard style={[{ alignSelf: "stretch" }]} />
+        <ServerCard actionable style={[{ alignSelf: "stretch" }]} />
       </SafeAreaView>
     </View>
   );

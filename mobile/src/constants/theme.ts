@@ -12,6 +12,8 @@ export const Colors = {
   accent: "#03fca5",
   accent2: "#098056",
   red: "#ff0048",
+  yellow: "#ffb300",
+  green: "#03fca5",
 } as const;
 
 export const Fonts = Platform.select({
