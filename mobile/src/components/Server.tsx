@@ -22,30 +22,35 @@ export default function Server({}: ServerProps) {
   }, [ip, port]);
 
   useEffect(() => {
-    if (connection !== "DISCONNECTED") return;
+    if (connection !== "DISCONNECTED" && connection !== "CONNECTED-AUTH")
+      return;
     const valid = () => ipRef.current === ip && portRef.current === port;
-    const timeout = setTimeout(async () => {
-      clearTimeout(timeout);
-      dispatch(setConnection("CONNECTING"));
-      try {
-        const resp = await fetch(`http://${ip}:${port}/health`, {
-          signal: AbortSignal.timeout(3 * 1e3),
-        });
+    const timeout = setTimeout(
+      async () => {
+        clearTimeout(timeout);
+        dispatch(setConnection("CONNECTING"));
+        try {
+          const resp = await fetch(`http://${ip}:${port}/health`, {
+            signal: AbortSignal.timeout(3 * 1e3),
+          });
+          if (!valid()) return;
+          const data = await resp.json();
+          if (!valid()) return;
+          if (!data) throw new Error("Invalid falsy data value");
+          if (typeof data !== "object") throw new Error("Invalid data type");
+          if (data.success !== true)
+            dispatch(setConnection("CONNECTED-NOAUTH"));
+          else dispatch(setConnection("CONNECTED-AUTH"));
+          return;
+        } catch (e) {
+          if (!valid()) return;
+          console.error(e);
+        }
         if (!valid()) return;
-        const data = await resp.json();
-        if (!valid()) return;
-        if (!data) throw new Error("Invalid falsy data value");
-        if (typeof data !== "object") throw new Error("Invalid data type");
-        if (data.success !== true) dispatch(setConnection("CONNECTED-NOAUTH"));
-        else dispatch(setConnection("CONNECTED-AUTH"));
-        return;
-      } catch (e) {
-        if (!valid()) return;
-        console.error(e);
-      }
-      if (!valid()) return;
-      dispatch(setConnection("DISCONNECTED"));
-    }, 3 * 1e3);
+        dispatch(setConnection("DISCONNECTED"));
+      },
+      (connection === "DISCONNECTED" ? 1 : 30) * 1e3,
+    );
     return () => clearTimeout(timeout);
   }, [ip, port, ipRef, portRef, connection]);
 

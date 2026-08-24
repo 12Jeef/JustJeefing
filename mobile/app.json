@@ -5,17 +5,19 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "scheme": "JustJeefing-mobile",
+    "scheme": "justjeefing",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "com.jeef.justjeefing"
     },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#101224",
         "foregroundImage": "./assets/icon.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.jeef.justjeefing"
     },
     "web": {
       "output": "static",
@@ -30,7 +32,8 @@
           "image": "./assets/icon.png",
           "imageWidth": 64
         }
-      ]
+      ],
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true,

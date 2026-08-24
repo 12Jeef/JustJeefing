@@ -12,7 +12,13 @@ export const SERVER_PUBLIC_PORT =
 
 export const DATA_DIR = path.join(process.cwd(), "data");
 
-export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "";
+export const GOOGLE_CLIENT_DESKTOP_ID =
+  process.env.GOOGLE_CLIENT_DESKTOP_ID || "";
+export const GOOGLE_CLIENT_IOS_ID = process.env.GOOGLE_CLIENT_IOS_ID || "";
+export const GOOGLE_CLIENT_IDS = [
+  GOOGLE_CLIENT_DESKTOP_ID,
+  GOOGLE_CLIENT_IOS_ID,
+];
 export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || "";
 
 export const EMAIL_WHITELIST = (process.env.EMAIL_WHITELIST || "")

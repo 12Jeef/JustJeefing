@@ -5,7 +5,8 @@ import { Pressable, StyleSheet, Text, View, ViewProps } from "react-native";
 import { Check, Eye, EyeOff, X } from "lucide-react-native";
 import Spinner from "./Spinner";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { setDev } from "@/slice";
+import { setConnection, setDev } from "@/slice";
+import useAuth from "@/hooks/useAuth";
 
 export type ServerCardProps = { actionable?: boolean } & ViewProps;
 
@@ -19,8 +20,10 @@ export default function ServerCard({
 
   const dispatch = useAppDispatch();
 
-  const { port } = useServer();
-  const ip = "127.0.0.1";
+  const { ip, port } = useServer();
+  const { ready, login } = useAuth(() =>
+    dispatch(setConnection("DISCONNECTED")),
+  );
 
   const [show, setShow] = useState(false);
 
@@ -82,9 +85,11 @@ export default function ServerCard({
       )}
       {actionable && connection === "CONNECTED-NOAUTH" && (
         <Pressable
+          disabled={!ready}
+          onPress={login}
           style={({ pressed }) => [
             styles.statusAuth,
-            { opacity: pressed ? 0.5 : 1 },
+            { opacity: pressed ? 0.5 : !ready ? 0.5 : 1 },
           ]}
         >
           <Text style={[styles.status, { color: Colors.yellow }]}>

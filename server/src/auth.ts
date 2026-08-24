@@ -1,6 +1,6 @@
 import {
   EMAIL_WHITELIST,
-  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_IDS,
   LOGIN_LASTS_FOR,
 } from "./config.js";
 import { OAuth2Client } from "google-auth-library";
@@ -13,7 +13,7 @@ import cookieParser from "cookie-parser";
 const l = logger.child("AUTH");
 
 l.i("Initializing...");
-const client = new OAuth2Client(GOOGLE_CLIENT_ID);
+const client = new OAuth2Client(GOOGLE_CLIENT_IDS[0]);
 const sessions: Map<string, { email: string; expires: number }> = new Map();
 l.i("Initialized");
 
@@ -33,7 +33,7 @@ export const setup = (app: express.Express) => {
     try {
       const ticket = await client.verifyIdToken({
         idToken,
-        audience: GOOGLE_CLIENT_ID,
+        audience: GOOGLE_CLIENT_IDS,
       });
       const payload = ticket.getPayload();
       const email = payload?.email;

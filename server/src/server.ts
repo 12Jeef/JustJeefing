@@ -14,6 +14,7 @@ try {
   l.e(`Initializing failed: ${err}`);
   process.exit(1);
 }
+app.use(express.json());
 l.s("Initialized");
 
 l.i("Setting up auth...");
