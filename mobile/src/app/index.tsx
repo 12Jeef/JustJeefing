@@ -3,6 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Colors } from "@/constants/theme";
 import SplashIcon from "@/components/SplashIcon";
+import ServerCard from "@/components/ServerCard";
 
 export default function Index() {
   return (
@@ -17,6 +18,7 @@ export default function Index() {
         <Text style={[styles.subtitle]}>
           A custom iOS app for Jeffrey to handle his own services
         </Text>
+        <ServerCard style={[{ alignSelf: "stretch" }]} />
       </SafeAreaView>
     </View>
   );

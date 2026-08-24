@@ -5,6 +5,7 @@ import Icon from "./Icon";
 import {
   bigIcon,
   boom,
+  delay,
   duration,
   easing,
   easingBoom,
@@ -40,7 +41,9 @@ const kfContainer = new Keyframe({
     backgroundColor: Colors.bg2,
     easing,
   },
-}).duration(duration * 1e3);
+})
+  .duration(duration * 1e3)
+  .delay(delay * 1e3);
 const kfBoom = new Keyframe({
   0: {
     transform: [{ scale: 0 }],
@@ -55,7 +58,9 @@ const kfBoom = new Keyframe({
     opacity: 0,
     easing: easingBoom,
   },
-}).duration(duration * 1e3);
+})
+  .duration(duration * 1e3)
+  .delay(delay * 1e3);
 const kfIcon = new Keyframe({
   0: {
     transform: [{ scale: bigIcon / smallIcon }],
@@ -66,7 +71,9 @@ const kfIcon = new Keyframe({
     opacity: 1,
     easing,
   },
-}).duration(duration * 1e3);
+})
+  .duration(duration * 1e3)
+  .delay(delay * 1e3);
 
 const styles = StyleSheet.create({
   wrapper: {

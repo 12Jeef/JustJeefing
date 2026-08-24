@@ -11,6 +11,7 @@ export const Colors = {
   fg3: "#8488a3",
   accent: "#03fca5",
   accent2: "#098056",
+  red: "#ff0048",
 } as const;
 
 export const Fonts = Platform.select({

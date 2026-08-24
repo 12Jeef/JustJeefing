@@ -6,7 +6,8 @@ import Icon from "./Icon";
 import { StyleSheet } from "react-native";
 import { Colors } from "@/constants/theme";
 import { SplashScreen } from "expo-router";
-import { bigIcon, duration, easing } from "@/constants/splash";
+import { bigIcon, delay, duration, easing } from "@/constants/splash";
+import { wait } from "@/util";
 
 export type SplashOverlayProps = {};
 
@@ -29,6 +30,7 @@ export default function SplashOverlay({}: SplashOverlayProps) {
       style={[styles.background]}
       onLayout={async () => {
         await SplashScreen.hideAsync();
+        await wait(delay);
         setStage(1);
       }}
     >
