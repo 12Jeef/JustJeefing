@@ -10,7 +10,7 @@ export type State = {
 
 const initialState: State = {
   server: {
-    dev: false,
+    dev: true,
     connection: "DISCONNECTED",
   },
 };

@@ -1,15 +1,8 @@
 import { Colors, Fonts } from "@/constants/theme";
-import useServerIP from "@/hooks/useServerIP";
+import useServer from "@/hooks/useServer";
 import { useEffect, useState } from "react";
-import {
-  Button,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-  ViewProps,
-} from "react-native";
-import { Eye, EyeOff, X } from "lucide-react-native";
+import { Pressable, StyleSheet, Text, View, ViewProps } from "react-native";
+import { Check, Eye, EyeOff, X } from "lucide-react-native";
 import Spinner from "./Spinner";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { setDev } from "@/slice";
@@ -17,29 +10,32 @@ import { setDev } from "@/slice";
 export type ServerCardProps = {} & ViewProps;
 
 export default function ServerCard({ style, ...etc }: ServerCardProps) {
-  const [showIP, setShowIP] = useState(false);
-  const serverIP = useServerIP();
-  useEffect(() => {
-    setShowIP(false);
-  }, [serverIP]);
-
   const dev = useAppSelector((state) => state.app.server.dev);
   const connection = useAppSelector((state) => state.app.server.connection);
 
   const dispatch = useAppDispatch();
+
+  const { port } = useServer();
+  const ip = "127.0.0.1";
+
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    setShow(false);
+  }, [ip, port]);
 
   return (
     <View style={[style, styles.container]} {...etc}>
       <Text style={[styles.title]}>Server Connection</Text>
       <View style={[styles.subtitle]}>
         <Pressable
-          onPress={() => setShowIP(!showIP)}
+          onPress={() => setShow(!show)}
           style={({ pressed }) => [
             styles.ipToggle,
             { opacity: pressed ? 0.5 : 1 },
           ]}
         >
-          {showIP ? (
+          {show ? (
             <EyeOff size={14} color={Colors.fg2} />
           ) : (
             <Eye size={14} color={Colors.fg2} />
@@ -53,13 +49,18 @@ export default function ServerCard({ style, ...etc }: ServerCardProps) {
             {dev ? "Development" : "Production"}
           </Text>
         </Pressable>
-        <Text style={[styles.ip]}>{showIP ? serverIP : "***.***.***.***"}</Text>
+        <Text style={[styles.ip]}>
+          {show ? ip + ":" + port : "***.***.***.***:****"}
+        </Text>
       </View>
       {connection === "DISCONNECTED" && (
-        <X size={32} color={Colors.red} style={[styles.icon]} />
+        <X size={24} color={Colors.red} style={[styles.icon]} />
       )}
       {connection === "CONNECTING" && (
-        <Spinner size={32} color={Colors.accent} style={[styles.icon]} />
+        <Spinner size={24} color={Colors.accent} style={[styles.icon]} />
+      )}
+      {connection === "CONNECTED" && (
+        <Check size={24} color={Colors.accent} style={[styles.icon]} />
       )}
     </View>
   );
@@ -104,11 +105,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: Fonts.mono,
     color: Colors.fg2,
-    width: 136,
   },
   icon: {
     position: "absolute",
-    top: "50%",
-    right: 16,
+    top: 12,
+    right: 12,
   },
 });

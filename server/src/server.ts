@@ -25,17 +25,15 @@ try {
 }
 l.s("Set up auth");
 
-const services: ((api: express.Router) => void)[] = [books];
+const services: (() => express.Router)[] = [books];
 const nServices = services.length;
 l.i(`Registering services ${nServices}...`);
 const failedServices: string[] = [];
 for (const service of services) {
   l.i(`Registering service "${service.name}"...`);
   try {
-    const api = express.Router();
-    api.use(auth);
-    service(api);
-    app.use(`/${service.name}`, api);
+    const api = service();
+    app.use(`/${service.name}`, auth, api);
     l.s(`Registered service "${service.name}"`);
   } catch (err) {
     l.e(`Registering service "${service.name}" failed: ${err}`);
