@@ -20,10 +20,10 @@ export default function Service({
       <SafeAreaView style={[styles.safeArea]}>
         <View style={[styles.nav]}>
           <Pressable onPress={() => router.back()}>
-            <ArrowLeft size={24} color={Colors.fg1} />
+            <ArrowLeft size={32} color={Colors.fg1} />
           </Pressable>
           <View style={[styles.navTitle]}>
-            <Icon size={24} color={Colors.fg1} />
+            <Icon size={32} color={Colors.fg1} />
             <Text style={[styles.title]}>{title}</Text>
           </View>
         </View>
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   title: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: 800,
     color: Colors.fg1,
   },
