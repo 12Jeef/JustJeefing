@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   statusAuth: {},
   icon: {
     position: "absolute",
-    bottom: 12,
-    right: 12,
+    bottom: 24,
+    right: 24,
   },
 });
