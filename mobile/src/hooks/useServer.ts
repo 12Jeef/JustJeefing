@@ -1,13 +1,10 @@
+import { SERVER_IP, SERVER_PORT } from "@/constants/config";
 import { useAppSelector } from "@/store";
-import { Server } from "@/types";
+import { Server } from "@/types.mobile";
 
 export default function useServer(): Server {
-  const dev = useAppSelector((state) => state.app.server.dev);
-  const ip = dev
-    ? "127.0.0.1"
-    : (process.env.EXPO_PUBLIC_SERVER_IP ?? "127.0.0.1");
-  const port = dev
-    ? 3000
-    : (parseInt(process.env.EXPO_PUBLIC_SERVER_PORT ?? "3000") ?? 3000);
+  const dev = useAppSelector((state) => state.server.dev);
+  const ip = dev ? "127.0.0.1" : SERVER_IP;
+  const port = dev ? 3000 : SERVER_PORT;
   return { ip, port };
 }

@@ -1,13 +1,13 @@
 import useServer from "@/hooks/useServer";
-import { setConnection } from "@/slice";
+import { setConnection } from "@/serverSlice";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { wait } from "@/util";
+import { checkResponse, wait } from "@/util.mobile";
 import { useEffect, useRef } from "react";
 
 export type ServerProps = {};
 
 export default function Server({}: ServerProps) {
-  const connection = useAppSelector((state) => state.app.server.connection);
+  const connection = useAppSelector((state) => state.server.connection);
 
   const dispatch = useAppDispatch();
 
@@ -33,17 +33,15 @@ export default function Server({}: ServerProps) {
           const resp = await fetch(`http://${ip}:${port}/health`, {
             signal: AbortSignal.timeout(3 * 1e3),
           });
-          if (!valid()) return;
-          const data = await resp.json();
-          if (!valid()) return;
-          if (!data) throw new Error("Invalid falsy data value");
-          if (typeof data !== "object") throw new Error("Invalid data type");
-          if (data.success !== true)
-            dispatch(setConnection("CONNECTED-NOAUTH"));
-          else dispatch(setConnection("CONNECTED-AUTH"));
+          await checkResponse(resp);
+          dispatch(setConnection("CONNECTED-AUTH"));
           return;
         } catch (e) {
           if (!valid()) return;
+          if (String(e).toLowerCase().includes("unauth")) {
+            dispatch(setConnection("CONNECTED-NOAUTH"));
+            return;
+          }
           console.error(e);
         }
         if (!valid()) return;

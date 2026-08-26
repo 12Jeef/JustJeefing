@@ -39,7 +39,10 @@ const arc = (start: number, stop: number) => {
   `;
 };
 
-export type SpinnerProps = { size: number; color?: ColorValue } & ViewProps;
+export type SpinnerProps = { size: number; color?: ColorValue } & Omit<
+  ViewProps,
+  "children"
+>;
 
 export default function Spinner({ size, color, style, ...etc }: SpinnerProps) {
   const progress = useSharedValue(0);

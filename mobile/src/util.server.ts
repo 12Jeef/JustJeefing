@@ -1,4 +1,4 @@
-import { UUID } from "./types.js";
+import { UUID } from "./types.server";
 import { v4 as uuidv4 } from "uuid";
 
 export const makeUUID = (): UUID => uuidv4();

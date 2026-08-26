@@ -1,6 +1,6 @@
 import express from "express";
 import { setupStorage } from "../../storage.js";
-import { Book, isAuthors, isLibrary, isTitle, Library } from "./types.js";
+import { Book, isLibrary, Library } from "./types.js";
 import {
   makeErrorResponse,
   makeSuccessResponse,
@@ -10,11 +10,11 @@ import fs from "fs";
 import logger from "../../logger.js";
 import Busboy, { FileInfo } from "busboy";
 import { Readable } from "stream";
-import { UUID } from "../../types.js";
+import { isArray, isString, UUID } from "../../types.js";
 
 const l = logger.child("SERVICE:books");
 
-function books() {
+export default function books() {
   const s = setupStorage(books);
 
   l.i(`Loading library...`);
@@ -37,7 +37,7 @@ function books() {
   l.i(`Setting up API...`);
   const api = express.Router();
 
-  // adding a book is not implemented yet, so just return a success response for now
+  // add a book
   api.post("/add", (req, res) => {
     l.i("Adding book...");
 
@@ -56,7 +56,7 @@ function books() {
           return;
         }
         title = val;
-        if (!isTitle(title)) {
+        if (!isString(title)) {
           l.e(`  Finding fields failed: Invalid title "${title}"`);
           res.status(400).json(makeErrorResponse(`Invalid title "${title}"`));
           return;
@@ -77,7 +77,7 @@ function books() {
           res.status(400).json(makeErrorResponse(`Invalid authors "${val}"`));
           return;
         }
-        if (!isAuthors(authors)) {
+        if (!isArray(authors, isString)) {
           l.e(`  Finding fields failed: Invalid authors "${authors}"`);
           res
             .status(400)
@@ -136,7 +136,7 @@ function books() {
         res.status(400).json(makeErrorResponse("Missing file field"));
         return;
       }
-      const book: Book = { title, authors, uuid };
+      const book: Book = { uuid, title, authors };
       library.push(book);
       s.writeJSON(library, "library.json");
       l.s(`Added book: "${title}" by ${authors.join(", ")}`);
@@ -153,13 +153,12 @@ function books() {
 
   // get a book by uuid
   api.get("/get/:uuid", (req, res) => {
-    l.i(`Getting book ${req.params.uuid}...`);
-    const book = library.find((b) => b.uuid === req.params.uuid);
+    const uuid = req.params.uuid;
+    l.i(`Getting book ${uuid}...`);
+    const book = library.find((b) => b.uuid === uuid);
     if (!book) {
-      l.e(`Getting book ${req.params.uuid} failed: Book not found`);
-      res
-        .status(404)
-        .json(makeErrorResponse(`Book not found ${req.params.uuid}`));
+      l.e(`Getting book ${uuid} failed: Book not found`);
+      res.status(404).json(makeErrorResponse(`Book not found ${uuid}`));
       return;
     }
     l.s(`Got book: "${book.title}" by ${book.authors.join(", ")}`);
@@ -168,13 +167,12 @@ function books() {
 
   // get a book pdf by uuid
   api.get("/get/:uuid/pdf", (req, res) => {
-    l.i(`Getting book pdf ${req.params.uuid}...`);
-    const book = library.find((b) => b.uuid === req.params.uuid);
+    const uuid = req.params.uuid;
+    l.i(`Getting book pdf ${uuid}...`);
+    const book = library.find((b) => b.uuid === uuid);
     if (!book) {
-      l.e(`Getting book pdf ${req.params.uuid} failed: Book not found`);
-      res
-        .status(404)
-        .json(makeErrorResponse(`Book not found ${req.params.uuid}`));
+      l.e(`Getting book pdf ${uuid} failed: Book not found`);
+      res.status(404).json(makeErrorResponse(`Book not found ${uuid}`));
       return;
     }
     l.s(`Got book pdf: "${book.title}" by ${book.authors.join(", ")}`);
@@ -193,13 +191,12 @@ function books() {
 
   // remove a book by uuid
   api.delete("/remove/:uuid", (req, res) => {
-    l.i(`Removing book ${req.params.uuid}...`);
-    const bookIndex = library.findIndex((b) => b.uuid === req.params.uuid);
+    const uuid = req.params.uuid;
+    l.i(`Removing book ${uuid}...`);
+    const bookIndex = library.findIndex((b) => b.uuid === uuid);
     if (bookIndex === -1) {
-      l.e(`Removing book ${req.params.uuid} failed: Book not found`);
-      res
-        .status(404)
-        .json(makeErrorResponse(`Book not found ${req.params.uuid}`));
+      l.e(`Removing book ${uuid} failed: Book not found`);
+      res.status(404).json(makeErrorResponse(`Book not found ${uuid}`));
       return;
     }
     const book = library[bookIndex];
@@ -211,7 +208,5 @@ function books() {
   });
 
   l.s(`Set up API`);
-
   return api;
 }
-export default books;

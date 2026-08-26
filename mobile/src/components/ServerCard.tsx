@@ -5,18 +5,21 @@ import { Pressable, StyleSheet, Text, View, ViewProps } from "react-native";
 import { Check, Eye, EyeOff, X } from "lucide-react-native";
 import Spinner from "./Spinner";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { setConnection, setDev } from "@/slice";
+import { setConnection, setDev } from "@/serverSlice";
 import useAuth from "@/hooks/useAuth";
 
-export type ServerCardProps = { actionable?: boolean } & ViewProps;
+export type ServerCardProps = { actionable?: boolean } & Omit<
+  ViewProps,
+  "children"
+>;
 
 export default function ServerCard({
   actionable = false,
   style,
   ...etc
 }: ServerCardProps) {
-  const dev = useAppSelector((state) => state.app.server.dev);
-  const connection = useAppSelector((state) => state.app.server.connection);
+  const dev = useAppSelector((state) => state.server.dev);
+  const connection = useAppSelector((state) => state.server.connection);
 
   const dispatch = useAppDispatch();
 
@@ -43,9 +46,9 @@ export default function ServerCard({
           ]}
         >
           {show ? (
-            <EyeOff size={14} color={Colors.fg2} />
+            <EyeOff size={18} color={Colors.fg2} />
           ) : (
-            <Eye size={14} color={Colors.fg2} />
+            <Eye size={18} color={Colors.fg2} />
           )}
         </Pressable>
         <Pressable
@@ -115,15 +118,15 @@ export default function ServerCard({
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    padding: 24,
     backgroundColor: Colors.bg2,
-    borderRadius: 8,
+    borderRadius: 16,
     alignItems: "stretch",
     justifyContent: "flex-start",
     gap: 8,
   },
   title: {
-    fontSize: 16,
+    fontSize: 24,
     fontWeight: 800,
     color: Colors.fg1,
   },
@@ -134,8 +137,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   ipToggle: {
-    width: 14,
-    height: 14,
+    width: 18,
+    height: 18,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -145,16 +148,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   tagText: {
-    fontSize: 14,
+    fontSize: 18,
     color: Colors.fg2,
   },
   ip: {
-    fontSize: 14,
+    fontSize: 18,
     fontFamily: Fonts.mono,
     color: Colors.fg2,
   },
   status: {
-    fontSize: 14,
+    fontSize: 18,
   },
   statusAuth: {},
   icon: {

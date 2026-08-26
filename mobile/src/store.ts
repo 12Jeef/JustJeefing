@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import reducer from "./slice";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import { serverReducer } from "./serverSlice";
+import { todoReducer } from "./components/services/todo/todoSlice";
 
 export const store = configureStore({
   reducer: {
-    app: reducer,
+    server: serverReducer,
+    todo: todoReducer,
   },
 });
 

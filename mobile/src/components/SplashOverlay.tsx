@@ -7,7 +7,7 @@ import { StyleSheet } from "react-native";
 import { Colors } from "@/constants/theme";
 import { SplashScreen } from "expo-router";
 import { bigIcon, delay, duration, easing } from "@/constants/splash";
-import { wait } from "@/util";
+import { wait } from "@/util.mobile";
 
 export type SplashOverlayProps = {};
 

@@ -1,5 +1,5 @@
-import { isArray, isString, isUUID, UUID } from "../../types.js";
-import { isUUIDSet } from "../../util.js";
+import { isArray, isString, isUUID, UUID } from "../../../types.server";
+import { isUUIDSet } from "../../../util.server";
 
 export type Book = {
   uuid: UUID;

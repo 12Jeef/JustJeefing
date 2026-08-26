@@ -55,7 +55,13 @@ export const setup = (app: express.Express) => {
       res.status(401).json(makeErrorResponse("Invalid Google token"));
     }
   });
-  app.get("/health", (req, res) => res.json({ success: authCheck(req) }));
+  app.get("/health", (req, res) => {
+    if (!authCheck(req)) {
+      res.sendStatus(401);
+      return;
+    }
+    res.json(makeSuccessResponse(null));
+  });
 
   l.s("Set up API");
 };

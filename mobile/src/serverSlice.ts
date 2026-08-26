@@ -1,33 +1,29 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ConnectionState } from "./types";
+import { ConnectionState } from "./types.mobile";
 
 export type State = {
-  server: {
-    dev: boolean;
-    connection: ConnectionState;
-  };
+  dev: boolean;
+  connection: ConnectionState;
 };
 
 const initialState: State = {
-  server: {
-    dev: true,
-    connection: "DISCONNECTED",
-  },
+  dev: true,
+  connection: "DISCONNECTED",
 };
 
 const slice = createSlice({
-  name: "app",
+  name: "server",
   initialState,
   reducers: {
     setDev: (state: State, action: PayloadAction<boolean>) => {
-      state.server.dev = action.payload;
+      state.dev = action.payload;
     },
     setConnection: (state: State, action: PayloadAction<ConnectionState>) => {
-      state.server.connection = action.payload;
+      state.connection = action.payload;
     },
   },
 });
 
 export const { setDev, setConnection } = slice.actions;
 
-export default slice.reducer;
+export const serverReducer = slice.reducer;

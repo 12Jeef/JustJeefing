@@ -3,6 +3,7 @@ import logger from "./logger.js";
 import { SERVER_LOCAL_PORT, SERVER_LOCAL_IP } from "./config.js";
 import books from "./services/books/books.js";
 import { auth, setup } from "./auth.js";
+import todo from "./services/todo/todo.js";
 
 const l = logger.child("SERVER");
 
@@ -26,7 +27,7 @@ try {
 }
 l.s("Set up auth");
 
-const services: (() => express.Router)[] = [books];
+const services: (() => express.Router)[] = [books, todo];
 const nServices = services.length;
 l.i(`Registering services ${nServices}...`);
 const failedServices: string[] = [];

@@ -1,25 +1,29 @@
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Colors } from "@/constants/theme";
 import SplashIcon from "@/components/SplashIcon";
 import ServerCard from "@/components/ServerCard";
+import Services from "@/components/Services";
 
 export default function Index() {
   return (
     <View style={[styles.main]}>
-      <SafeAreaView style={[styles.safeArea]}>
-        <SplashIcon />
-        <Text style={[styles.title]}>
-          <Text style={[styles.titlePart1]}>Just</Text>
-          {"\n"}
-          <Text style={[styles.titlePart2]}>Jeefing</Text>
-        </Text>
-        <Text style={[styles.subtitle]}>
-          A custom iOS app for Jeffrey to handle his own services
-        </Text>
-        <ServerCard actionable style={[{ alignSelf: "stretch" }]} />
-      </SafeAreaView>
+      <ScrollView>
+        <SafeAreaView style={[styles.safeArea]}>
+          <SplashIcon />
+          <Text style={[styles.title]}>
+            <Text style={[styles.titlePart1]}>Just</Text>
+            {"\n"}
+            <Text style={[styles.titlePart2]}>Jeefing</Text>
+          </Text>
+          <Text style={[styles.subtitle]}>
+            A custom iOS app for Jeffrey to handle his own services
+          </Text>
+          <ServerCard actionable style={[{ alignSelf: "stretch" }]} />
+          <Services />
+        </SafeAreaView>
+      </ScrollView>
     </View>
   );
 }
@@ -28,7 +32,7 @@ const styles = StyleSheet.create({
   main: {
     flex: 1,
     backgroundColor: Colors.bg1,
-    alignItems: "center",
+    alignItems: "stretch",
     justifyContent: "center",
   },
   safeArea: {
@@ -37,13 +41,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 32,
     padding: 32,
+    paddingTop: 128,
   },
   title: {
-    paddingTop: 12,
+    paddingTop: 16,
     textAlign: "center",
-    fontSize: 48,
+    fontSize: 64,
     fontWeight: 800,
-    lineHeight: 36,
+    lineHeight: 48,
   },
   titlePart1: {
     color: Colors.fg1,
@@ -54,7 +59,7 @@ const styles = StyleSheet.create({
   subtitle: {
     paddingHorizontal: 32,
     textAlign: "center",
-    fontSize: 16,
+    fontSize: 18,
     color: Colors.fg2,
   },
 });
