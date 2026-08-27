@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     width: smallIconContainer,
     height: smallIconContainer,
     backgroundColor: Colors.bg2,
-    borderRadius: 40,
+    borderRadius: 60,
   },
   boom: {
     zIndex: -1,

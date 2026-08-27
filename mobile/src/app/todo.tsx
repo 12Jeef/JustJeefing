@@ -7,7 +7,10 @@ import {
   Item,
   OnlyDate,
 } from "@/components/services/todo/types.server";
-import { intersects } from "@/components/services/todo/util.server";
+import {
+  compareDates,
+  intersects,
+} from "@/components/services/todo/util.server";
 import { todoService } from "@/components/services/types";
 import { day, loadLength, loadLengthLong } from "@/constants/services/todo";
 import useServer from "@/hooks/useServer";
@@ -17,8 +20,6 @@ import { useEffect, useRef } from "react";
 import { FlatList, StyleSheet } from "react-native";
 
 export default function Todo() {
-  console.log("render");
-
   const days = useAppSelector((state) => state.todo.days);
   const daysRef = useRef(days);
   daysRef.current = days;
@@ -85,11 +86,7 @@ export default function Todo() {
             daysRef.current.map((d) => {
               for (let i = 0; i < days.length; i++) {
                 const day = days[i];
-                if (
-                  d.date[0] === day.date[0] &&
-                  d.date[1] === day.date[1] &&
-                  d.date[2] === day.date[2]
-                )
+                if (compareDates(d.date, day.date) === 0)
                   return { ...d, items: itemsPerDay[i], loaded: true };
               }
               return d;
@@ -116,7 +113,9 @@ export default function Todo() {
       <FlatList
         style={[styles.list]}
         data={days}
-        renderItem={({ item }) => <TodoDay day={item} />}
+        renderItem={({ item, index }) => (
+          <TodoDay actionable={index === 0} day={item} />
+        )}
         onEndReached={() => loadNext(false)}
         onEndReachedThreshold={0.5}
       />
